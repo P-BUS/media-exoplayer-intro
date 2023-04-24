@@ -17,6 +17,7 @@ package com.example.exoplayer
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.media3.exoplayer.ExoPlayer
 import com.example.exoplayer.databinding.ActivityPlayerBinding
 
 /**
@@ -27,9 +28,19 @@ class PlayerActivity : AppCompatActivity() {
     private val viewBinding by lazy(LazyThreadSafetyMode.NONE) {
         ActivityPlayerBinding.inflate(layoutInflater)
     }
+    private var player: ExoPlayer? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(viewBinding.root)
+    }
+
+    private fun initializePlayer() {
+        player = ExoPlayer.Builder(this)
+            .build()
+            .also { exoPlayer ->
+                viewBinding.videoView.player = exoPlayer
+            }
+
     }
 }
