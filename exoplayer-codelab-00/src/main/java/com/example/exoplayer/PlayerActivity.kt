@@ -35,6 +35,9 @@ class PlayerActivity : AppCompatActivity() {
         ActivityPlayerBinding.inflate(layoutInflater)
     }
     private var player: ExoPlayer? = null
+    private var playWhenReady = true
+    private var currentItem = 0
+    private var playbackPosition = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,10 +61,16 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        if (Util.SDK_INT <= 23) {
+            releasePlayer()
+        }
     }
 
     override fun onStop() {
         super.onStop()
+        if (Util.SDK_INT > 23) {
+            releasePlayer()
+        }
     }
 
     private fun initializePlayer() {
@@ -79,5 +88,15 @@ class PlayerActivity : AppCompatActivity() {
             controller.hide(WindowInsetsCompat.Type.systemBars())
             controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
+    }
+    
+    private fun releasePlayer() {
+        player?.let { exoPlayer ->  
+            playbackPosition = exoPlayer.currentPosition
+            currentItem = exoPlayer.currentMediaItemIndex
+            playWhenReady = exoPlayer.playWhenReady
+            exoPlayer.release()
+        }
+        player = null
     }
 }
