@@ -79,6 +79,10 @@ class PlayerActivity : AppCompatActivity() {
             .also { exoPlayer ->
                 viewBinding.videoView.player = exoPlayer
                 val mediaItem = MediaItem.fromUri(getString(R.string.media_url_mp3))
+
+                exoPlayer.playWhenReady = playWhenReady
+                exoPlayer.seekTo(currentItem, playbackPosition)
+                exoPlayer.prepare()
             }
     }
     @SuppressLint("InlinedApi")
