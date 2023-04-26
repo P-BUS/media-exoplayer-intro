@@ -37,10 +37,12 @@ class PlayerActivity : AppCompatActivity() {
     private val viewBinding by lazy(LazyThreadSafetyMode.NONE) {
         ActivityPlayerBinding.inflate(layoutInflater)
     }
+    private val playbackStateListener: Player.Listener = playbackStateListener()
     private var player: ExoPlayer? = null
     private var playWhenReady = true
     private var currentItem = 0
     private var playbackPosition = 0L
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,6 +96,7 @@ class PlayerActivity : AppCompatActivity() {
                 exoPlayer.addMediaItem(secondMediaItem)*/
                 exoPlayer.playWhenReady = playWhenReady
                 exoPlayer.seekTo(currentItem, playbackPosition)
+                exoPlayer.addListener(playbackStateListener)
                 exoPlayer.prepare()
             }
     }
@@ -111,6 +114,7 @@ class PlayerActivity : AppCompatActivity() {
             playbackPosition = exoPlayer.currentPosition
             currentItem = exoPlayer.currentMediaItemIndex
             playWhenReady = exoPlayer.playWhenReady
+            exoPlayer.removeListener(playbackStateListener) // avoid dangling references
             exoPlayer.release()
         }
         player = null
