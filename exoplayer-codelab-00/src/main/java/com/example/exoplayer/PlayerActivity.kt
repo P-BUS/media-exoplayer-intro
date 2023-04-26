@@ -17,20 +17,21 @@ package com.example.exoplayer
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
+import androidx.media3.common.Player
 import androidx.media3.common.util.Util
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
 import com.example.exoplayer.databinding.ActivityPlayerBinding
 
-/**
- * A fullscreen activity to play audio or video streams.
- */
+const val TAG = "PlayerActivity"
+
 class PlayerActivity : AppCompatActivity() {
 
     private val viewBinding by lazy(LazyThreadSafetyMode.NONE) {
@@ -113,5 +114,18 @@ class PlayerActivity : AppCompatActivity() {
             exoPlayer.release()
         }
         player = null
+    }
+}
+
+private fun playbackStateListener() = object: Player.Listener {
+    override fun onPlaybackStateChanged(playbackState: Int) {
+        val stateString: String = when (playbackState) {
+            ExoPlayer.STATE_IDLE -> "ExoPlayer.STATE_IDLE   _"
+            ExoPlayer.STATE_BUFFERING -> "ExoPlayer.STATE_BUFFERING   _"
+            ExoPlayer.STATE_READY -> "ExoPlayer.STATE_READY   _"
+            ExoPlayer.STATE_ENDED -> "ExoPlayer.STATE_ENDED   _"
+            else -> "UNKNOWN_STATE"
+        }
+        Log.d(TAG, "changed state to $stateString")
     }
 }
